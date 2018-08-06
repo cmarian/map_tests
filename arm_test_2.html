@@ -91,30 +91,34 @@
 	mymap.on("click", function (e) {
         
           
-       for (var i = 0; i < person.length; i++) {
-       	  var start = [person[i].lng, person[i].lat];
-		  var end = [e.lngLat.lng, e.lngLat.lat];
-		  var idn = 'n'+(i+1);
-		  var pers = person[i].name;
-		  var n = 1;
-		  document.getElementById(idn.valueOf()).innerHTML = pers;
-		  var directionsRequest = "https://api.mapbox.com/directions/v5/mapbox/driving/" + start[0] + "," + start[1] + ";" + end[0] + "," + end[1] + "?geometries=geojson&access_token=" + mapboxgl.accessToken;
+       	  var end = [e.lngLat.lng, e.lngLat.lat];
+		  // var idn = 'n'+(i+1);
+		  // var pers = person[i].name;
+		  // var n = 1;
+		  // document.getElementById(idn.valueOf()).innerHTML = pers;
+		  var directionsRequest = "https://graphhopper.com/api/1/matrix?point=" +
+		  								 end[1] + "," + end[0] + "&point=" + 
+		  								 person[0].lat + "," + person[0].lng + "&point="+ 
+		  								 person[1].lat + "," + person[1].lng + "&point="+ 
+		  								 person[2].lat + "," + person[2].lng + "&point="+ 
+		  								 person[3].lat + "," + person[3].lng + "&point="+ 
+		  								 "&type=json&vehicle=car&debug=true&out_array=weights&out_array=times&out_array=distances&key=7d4b7b4a-175d-4a69-9f76-fa926e7c05f5";
 		  $.ajax({
 				    method: "GET",
 				    url: directionsRequest,
 				    dataType: "json",
 				    //cache:false,
 				}).done(function(data) {
-						    var route = data.routes[0].geometry;
-						    var dist = data.routes[0].distance;
-						    var hrMins = data.routes[0].duration;
-						    $('#d'+n).text('Distance: '+roundNumber(dist/1000, 1)+' km');
-							$("#t"+n).text('Approximate time: '+secondsToHms(hrMins));
-							n++;
+						    alert (
+						    		person[0].name+': '+roundNumber(data.distances[1][0]/1000,1)+' km, in approx '+secondsToHms(data.times[1][0])+'\n'+
+						    		person[1].name+': '+roundNumber(data.distances[2][0]/1000,1)+' km, in approx '+secondsToHms(data.times[2][0])+'\n'+
+						    		person[2].name+': '+roundNumber(data.distances[3][0]/1000,1)+' km, in approx '+secondsToHms(data.times[3][0])+'\n'+
+						    		person[3].name+': '+roundNumber(data.distances[4][0]/1000,1)+' km, in approx '+secondsToHms(data.times[4][0])+'\n'
+
+						    	)
 						})	
 		  
-       } //for
-
+       
        
 
     })   //mymap.on
